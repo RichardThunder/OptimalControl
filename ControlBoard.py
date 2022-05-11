@@ -1,13 +1,13 @@
 import sys
 
 from PyQt6 import QtCore, QtGui,QtWidgets
-from PyQt6.QtCore import QEventLoop, QTimer, QObject, pyqtSignal, QThread
-from PyQt6.QtWidgets import QMainWindow, QApplication
-
+from PyQt6.QtCore import QEventLoop, QTimer, QObject, pyqtSignal, QThread, QCoreApplication
+from PyQt6.QtWidgets import QMainWindow, QApplication, QFileDialog, QMessageBox
+from net.LoadGraph import *
 from Opt_Sta import CompareMain
 from UI_MainWindow import Ui_MainWindow
 from UI_dialog import Ui_Dialog
-
+from util.draw import *
 class EmitStr(QObject):
     '''
     定义一个信号类，
@@ -38,7 +38,19 @@ class ControlBoard(QMainWindow, Ui_MainWindow):
         self.setArgument1.triggered.connect(self.showDialog)
         self.setArgument2.triggered.connect(self.showDialog)
         self.setArgument3.triggered.connect(self.showDialog)
+        self.openNet.triggered.connect(self.openfile)
+        self.newRandomNet.triggered.connect(self.newRandom)
+        self.saveOPT.triggered.connect(self.save)
+        self.actionwfrre.triggered.connect(self.closeapp)
+        self.help.triggered.connect(self.showhelp)
+        self.AboutThis.triggered.connect(self.showinfo)
 
+    def openfile(self):
+        fname, _ = QFileDialog.getOpenFileName(self, '打开文件', '.', '文本文件(*.txt)')
+        print(fname)
+        graph = Get_arenas_email_Network(fname)[3]
+        drawClub(graph)
+        self.label_34.setPixmap(QtGui.QPixmap("./net/club.png"))
 
 
 
@@ -57,10 +69,15 @@ class ControlBoard(QMainWindow, Ui_MainWindow):
         self.mythread.start()
         self.pushButton.setEnabled(False)
         self.pushButton.setText("运行中")
-        self.timer.start(1000, self)
+        self.timer.start(10000, self)
+        self.mythread.finished.connect(self.thread_finish_process)
+
+    def thread_finish_process(self):
+        self.step=100
+
 
     def timerEvent(self, event):
-        if self.step >= 100:
+        if self.step >= 100 :
             self.timer.stop()
             # 修改文本标签显示内容
             self.statusbar.showMessage("程序执行完毕，请查看结果 ")
@@ -70,6 +87,9 @@ class ControlBoard(QMainWindow, Ui_MainWindow):
             self.pushButton.setText("运行")
             self.step=0
             self.progressBar.setValue(self.step)
+            self.label_35.setPixmap(QtGui.QPixmap("OPtr/61.png"))
+            self.label_34.setPixmap(QtGui.QPixmap("net/club.png"))
+
 
             return
         # 累计步数
@@ -77,10 +97,30 @@ class ControlBoard(QMainWindow, Ui_MainWindow):
         # 修改进度条的值
         self.progressBar.setValue(self.step)
 
+    def newRandom(self):
+        self.label_34.setPixmap(QtGui.QPixmap("net/football.png"))
 
     def showDialog(self):
         Dialog.show()
 
+    def save(self):
+
+        QMessageBox.information(self, '已保存', '控制策略已保存' )
+        # if reply == QMessageBox.StandardButton.Yes:
+        #     self.accept()
+
+    def closeapp(self):
+        reply = QMessageBox.question(self, 'Message',
+                                     "Are you sure to quit?", QMessageBox.StandardButton.Yes |
+                                     QMessageBox.StandardButton.No, QMessageBox.StandardButton.No)
+
+        if reply == QMessageBox.StandardButton.Yes:
+            QCoreApplication.instance().quit()
+
+    def showhelp(self):
+        QMessageBox.information(self, '帮助', '文件->导入网络->运行。 等待运行结果')
+    def showinfo(self):
+        QMessageBox.information(self,'关于此程序',"Author:Richard @CopyRight 2022")
     def setNewArgument(self):
         _translate = QtCore.QCoreApplication.translate
         self.label_5.setText(_translate("MainWindow", "染毒节点初始值:"))

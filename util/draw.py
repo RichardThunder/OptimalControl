@@ -20,25 +20,23 @@ def Graph():
 #
 #
 
-def drawCircle(G):
-    print("Node Degree")
-    for v in G:
-        print(f"{v:4} {G.degree(v):6}")
 
-    nx.draw_circular(G, with_labels=True)
-    plt.show()
+def drawClub(G):
+    options = {"node_color": "green", "node_size": 50, "linewidths": 0, "width": 0.3, "alpha": 1,"edge_color": "orange"}
+    nx.draw_circular(G, with_labels=False,**options)
+    plt.savefig("./net/club.png")
 
 
 def football(G):
     # football
     options = {"node_color": "blue", "node_size": 50, "linewidths": 0, "width": 0.3,"alpha":0.7}
 
-    pos = nx.spring_layout(G,2000)  # Seed for reproducible layout
+    pos = nx.spring_layout(G,1969)  # Seed for reproducible layout
     nx.draw(G, pos, **options)
     plt.savefig("football.png")
     #plt.show()
 
-def ThreeD():
+def ThreeD(G):
     # 3d spring layout
     pos = nx.spring_layout(G, dim=3, seed=779)
     # Extract node and edge positions from the layout
@@ -109,6 +107,12 @@ def drawtest():
            [r'$-1$', r'$0$', r'$+1$'])
     plt.show()
 
+if __name__ == "__main__":
+    #path="/Users/richard/Desktop/OptCtrl/net/realWorld.txt"
+    path="/Users/richard/Desktop/OptCtrl/net/short_social.txt"
+    #path="/Users/richard/Desktop/OptCtrl/net/scaleFree.txt"
+    graph=Get_arenas_email_Network(path)[3]
+    drawClub(graph)
 
 
 

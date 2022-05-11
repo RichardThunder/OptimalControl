@@ -29,6 +29,6 @@ def Get_arenas_email_Network(path):
         degree_List.append(degree)
     #print(degree_List)
 
-    return A,degree_List
+    return A,degree_List,Edge_Lists,G
 #查看获取的图是否正确
 #print(Get_arenas_email_Network()[0])

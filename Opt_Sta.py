@@ -8,7 +8,7 @@ from net.LoadGraph import *
 from OptimalControl_Euler import OptimalControl_Euler
 import warnings
 
-from util.draw import football, drawCircle
+from util.draw import football, drawClub
 from util.draw_OptCtrl import draw_OptCtrl
 from util.draw_Static import draw_StaCtrl
 
@@ -20,12 +20,12 @@ def CompareMain():
     #path='./net/realWorld.txt'
     Graph = Get_arenas_email_Network(path)[0]
 
-    #football(Graph)
+    drawClub(Get_arenas_email_Network(path)[3])
     #drawCircle(Graph)
     # argument
     T = 10
     #h = 0.01
-    h=1
+    h=0.1
     xtk = np.arange(0, T + h, h)
     n=len(xtk)
     maxTimes=10
